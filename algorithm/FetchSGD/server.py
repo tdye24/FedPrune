@@ -106,7 +106,7 @@ class SERVER:
             for (trainSamplesNum, update) in self.updates:
                 SKETCH.accumulateTable(trainSamplesNum / sumOfSampleNum * update)
 
-            weight_update, newVelocity, newError = self.serverSketched(self, sketched_grad=averageUpdate, Velocity=self.Velocity, Error=self.Error)
+            weight_update, newVelocity, newError = self.serverSketched(self, sketched_update=SKETCH.table, Velocity=self.Velocity, Error=self.Error)
             self.Velocity, self.Error = newVelocity, newError
             # update global server model
             param_vec = self.server_weights + weight_update.cpu()
@@ -180,7 +180,7 @@ class SERVER:
         # table.add_row([trainingAcc, testAcc, trainingLoss, testLoss])
         # print(table)
 
-    def serverSketched(self, sketched_grad, Velocity, Error):
+    def serverSketched(self, sketched_update, Velocity, Error):
         rho = self.config.globalMomentum
         k = self.config.k
         if self.config.errorType == "local":
@@ -188,7 +188,7 @@ class SERVER:
         elif self.config.errorType == "virtual":
             assert self.config.localMomentum == 0
 
-        torch.add(input=sketched_grad, other=Velocity, alpha=rho, out=Velocity)
+        torch.add(input=sketched_update, other=Velocity, alpha=rho, out=Velocity)
 
         if self.config.errorType == "local":
             Error = Velocity
