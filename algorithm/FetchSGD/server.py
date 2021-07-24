@@ -104,11 +104,10 @@ class SERVER:
                                  device=torch.device('cuda:0'),
                                  num_blocks=20)
             for (trainSamplesNum, update) in self.updates:
-                SKETCH.accumulateTable(trainSamplesNum/sumOfSampleNum * update)
+                SKETCH.accumulateTable(trainSamplesNum / sumOfSampleNum * update)
 
-            # weight_update, newVelocity, newError = self.serverSketched(self, sketched_grad=averageUpdate, Velocity=self.Velocity, Error=self.Error, lr=1)
-            weight_update = SKETCH.unSketch(k=50000)
-
+            weight_update, newVelocity, newError = self.serverSketched(self, sketched_grad=averageUpdate, Velocity=self.Velocity, Error=self.Error)
+            self.Velocity, self.Error = newVelocity, newError
             # update global server model
             param_vec = self.server_weights + weight_update.cpu()
             set_param_vec(model=self.model, param_vec=param_vec)
@@ -181,7 +180,7 @@ class SERVER:
         # table.add_row([trainingAcc, testAcc, trainingLoss, testLoss])
         # print(table)
 
-    def serverSketched(self, sketched_grad, Velocity, Error, lr):
+    def serverSketched(self, sketched_grad, Velocity, Error):
         rho = self.config.globalMomentum
         k = self.config.k
         if self.config.errorType == "local":
