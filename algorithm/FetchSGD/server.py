@@ -106,7 +106,7 @@ class SERVER:
             for (trainSamplesNum, update) in self.updates:
                 SKETCH.accumulateTable(trainSamplesNum / sumOfSampleNum * update)
 
-            weight_update, newVelocity, newError = self.serverSketched(self, sketched_update=SKETCH.table, Velocity=self.Velocity, Error=self.Error)
+            weight_update, newVelocity, newError = self.serverSketched(sketched_update=SKETCH.table, Velocity=self.Velocity, Error=self.Error)
             self.Velocity, self.Error = newVelocity, newError
             # update global server model
             param_vec = self.server_weights + weight_update.cpu()
@@ -203,7 +203,7 @@ class SERVER:
         SKETCH.zero()
         SKETCH.accumulateVec(update)
         sketched_update = SKETCH.table
-        if error_type == "virtual":
+        if self.config.errorType == "virtual":
             nz = sketched_update.nonzero()
             Error[nz[:, 0], nz[:, 1]] = 0
 
