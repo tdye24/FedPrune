@@ -47,7 +47,7 @@ def setup_datasets(dataset, batch_size):
 
 def select_model(algorithm, model_name):
     model = None
-    if algorithm == 'fetchsgd':
+    if algorithm in ['fetchsgd', 'topk']:
         if model_name == 'cifar10':
             model = FetchSGD_CIFAR10()
         elif model_name == 'resnet9':
