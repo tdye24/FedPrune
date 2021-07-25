@@ -31,7 +31,7 @@ class CLIENT:
         if self.velocity is not None:
             velocity = self.velocity.to(self.device)
         if self.error is not None:
-            error = self.velocity.to(self.device)
+            error = self.error.to(self.device)
         model = self.model
         model.to(self.device)
         with torch.no_grad():
@@ -59,7 +59,7 @@ class CLIENT:
         update = currentModelVec - initialModelVec
 
         if self.config.localMomentum > 0:
-            torch.add(input=g, other=velocity, alpha=self.config.local_momentum, out=velocity)
+            torch.add(input=update, other=velocity, alpha=self.config.localMomentum, out=velocity)
 
         if self.config.errorType == 'local':
             error += velocity if velocity is not None else update

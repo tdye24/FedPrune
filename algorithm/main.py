@@ -1,5 +1,6 @@
 import sys
 import os
+from prettytable import PrettyTable
 
 sys.path.append(os.path.abspath(os.path.join(os.getcwd(), '../')))
 
