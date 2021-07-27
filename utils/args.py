@@ -110,4 +110,9 @@ def parse_args():
                         help='Clipping gradient norm, is per-worker',
                         type=float)
 
+    parser.add_argument('--batchAveraging',
+                        help='batch averaging',
+                        type=bool,
+                        default=True)
+
     return parser.parse_args()

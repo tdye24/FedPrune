@@ -45,6 +45,10 @@ class CLIENT:
                 loss.backward()
                 optimizer.step()
                 meanLoss.append(loss.item())
+                if self.config.batchAveraging:
+                    break
+            if self.config.batchAveraging:
+                break
 
         with torch.no_grad():
             currentModelVec = get_param_vec(model=model)
